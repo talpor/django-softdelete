@@ -122,21 +122,25 @@ class SoftDeleteObject(models.Model):
 
     def _do_delete(self, changeset, related):
         rel = related.get_accessor_name()
-        
+
         # Sometimes there is nothing to delete
         if not hasattr(self, rel):
             return
-        
+
         try:
-            getattr(self, rel).all().delete(changeset=changeset)
+            getattr(self, rel).delete()
         except:
             try:
-                getattr(self, rel).all().delete()
+                getattr(self, rel).all().delete(changeset=changeset)
             except:
-                try:
-                    getattr(self, rel).__class__.objects.all().delete(changeset=changeset)
-                except:
-                    getattr(self, rel).__class__.objects.all().delete()
+                getattr(self, rel).all().delete()
+
+    # Never, under any circumstance do we want to delete a whole class
+    #try:
+    #    getattr(self, rel).__class__.objects.all().delete(changeset=changeset)
+    #except:
+    #    getattr(self, rel).__class__.objects.all().delete()
+
 
     def delete(self, *args, **kwargs):
         if self.deleted_at:

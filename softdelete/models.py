@@ -128,12 +128,16 @@ class SoftDeleteObject(models.Model):
             return
 
         try:
-            getattr(self, rel).delete()
+            related = getattr(self, rel)
+        except ObjectDoesNotExist:
+            return
+        try:
+            related.delete()
         except:
             try:
-                getattr(self, rel).all().delete(changeset=changeset)
+                related.all().delete(changeset=changeset)
             except:
-                getattr(self, rel).all().delete()
+                related.all().delete()
 
     # Never, under any circumstance do we want to delete a whole class
     #try:

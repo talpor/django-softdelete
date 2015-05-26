@@ -71,9 +71,9 @@ class SoftDeleteManager(models.Manager):
         '''
 
         if django.VERSION >= (1, 8, 0, 'final', 0):
-            return super(SoftDeleteManager, self).get_queryset()
+            return self.get_queryset()
         else:
-            return super(SoftDeleteManager, self).get_query_set()
+            return self.get_query_set()
 
     def get_query_set(self):
         qs = super(SoftDeleteManager,self).get_query_set().filter(deleted_at__isnull=True)

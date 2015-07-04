@@ -5,7 +5,7 @@ from django.db.models import query
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.auth.models import Group, Permission
 from django.utils import timezone
 import logging
@@ -238,7 +238,7 @@ class ChangeSet(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    record = generic.GenericForeignKey('content_type', 'object_id')
+    record = GenericForeignKey('content_type', 'object_id')
 
     def get_content(self):
         self.record = self.content_type.model_class().objects.get(pk=self.object_id)
@@ -265,7 +265,7 @@ class SoftDeleteRecord(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    record = generic.GenericForeignKey('content_type', 'object_id')
+    record = GenericForeignKey('content_type', 'object_id')
 
     class Meta:
         unique_together= (('changeset', 'content_type', 'object_id'),)
